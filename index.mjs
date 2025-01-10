@@ -45,7 +45,7 @@ connectionManager.on('data', async data => {
                 break
             case 'comModule':
                 try {
-                    reqData = data.request;
+                    const reqData = data.request;
                     const fn = reqData.function;
                     const params = reqData.options || [];
                     connectionManager.send({ 'Response': ` Com function "${fn}", options: "${params}"` });
