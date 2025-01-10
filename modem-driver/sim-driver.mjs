@@ -514,16 +514,12 @@ class CommunicationModule extends SIM7000 {
       const res = [];
 
       function parseResponse(data) {
-        resolve({ 'resp': data, 'queue': res });
+        res.push(data);
+        resolve({ 'resp': res });
       }
 
       function callbCollect(fName, data) {
         res.push(data);
-        // console.info('Command response:', fName, data);
-      }
-    
-      function callb(fName, data) {
-        // console.info('Command response:', fName, data);
       }
 
       const commandsQueue = [

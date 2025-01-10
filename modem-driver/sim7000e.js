@@ -42,7 +42,9 @@ class SIM7000 {
             // }
             if (this.current && this.current.data.replace(String.fromCharCode(0x1A), '') !== trimData && this.current.callback) {
                 this.current.callback(trimData);
-                this.current = undefined;
+                if (trimData.at(0) !== '+') {
+                    this.current = undefined;
+                }
             }
             if (trimData === 'OK' || trimData === '>' || trimData === 'ERROR') {
                 this.processQueue();
