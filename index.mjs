@@ -21,7 +21,7 @@ connectionManager.on('data', async data => {
             case 'reboot':
                 break;
             case 'update':
-                connectionManager.send({ 'Not implemented': data });
+                connectionManager.send({ 'update': "updating..." });
                 updateManager();
                 break;
             case 'getRSSI':
@@ -81,4 +81,5 @@ await comModuleConnect();
 
 BM.on('lowCharge', () => {
     console.log('Low charge:', BM.charge);
+    connectionManager.send({ 'batModule': { 'charge': BM.charge } });
 });
