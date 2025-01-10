@@ -1,8 +1,3 @@
-// UART_PATH = "/dev/serial0"
-// BAUDRATE = 115200
-// APN_GATE = "internet"
-// SERVER_IP = "176.114.4.64"
-
 import { SIM7000 } from './sim7000e.js';
 import { APN_GATE } from './modem-config.mjs';
 import { Gpio } from 'pigpio';
@@ -236,7 +231,7 @@ class CommunicationModule extends SIM7000 {
     });
   }
 
-    // Get GSM location
+  // Get GSM location
   async getGSMLocation() {
     //   commands = [
     //     {"command": "AT+SAPBR=3,1,"Contype","GPRS"", "expected_response": Status.OK, "comment": "Set bearer parameter"},
@@ -260,50 +255,50 @@ class CommunicationModule extends SIM7000 {
       }
 
       this._gettingGSMLocation = true;
-        function parseCLBS(data) {
-            // console.log('Getting location:', data);
-            if (data.startsWith('+CLBS:')) {
-              const split = data.split(',');
-              if (split.length >= 4) {
-                //+CLBS: 0,30.371534,50.372671,550,2024/12/25,22:05:00
-                // const longitude = split[1];
-                // const latitude = split[2];
-                // const acuracy = split[3];
-                // const date = split[4];
-                // const time = split[5];
-                let dateTime = undefined;
-                try {
-                  dateTime = new Date(`${split[4]} ${split[5]}`);
-                } catch (error) {
-                  console.error('Getting datetime error:', error);
-                }
-                this._lastGSMLocation = new Location(parseFloat(split[1]), parseFloat(split[2]), parseInt(split[3]), dateTime);
-  
-                console.log('GSMLocation:', this._lastGSMLocation);
-              }
-            } else {
-              console.error('Failed to get GSM location:', data);
+      function parseCLBS(data) {
+        // console.log('Getting location:', data);
+        if (data.startsWith('+CLBS:')) {
+          const split = data.split(',');
+          if (split.length >= 4) {
+            //+CLBS: 0,30.371534,50.372671,550,2024/12/25,22:05:00
+            // const longitude = split[1];
+            // const latitude = split[2];
+            // const acuracy = split[3];
+            // const date = split[4];
+            // const time = split[5];
+            let dateTime = undefined;
+            try {
+              dateTime = new Date(`${split[4]} ${split[5]}`);
+            } catch (error) {
+              console.error('Getting datetime error:', error);
             }
-            resolve(this._lastGSMLocation);
-          }
-          function callb(fName, data) {
-            // console.info('Command response:', fName, data);
-          }
-        const commandsQueue = [
-            { data: 'AT+SAPBR=3,1,\"Contype\",\"GPRS\"', callback: callb.bind(undefined,'AT+SAPBR=3,1,\"Contype\",\"GPRS\"') }, // Set bearer parameter
-            { data: `AT+SAPBR=3,1,\"APN\",\"${APN_GATE}\"`, callback: callb.bind(undefined,`AT+SAPBR=3,1,\"APN\",\"${APN_GATE}\"`) }, // Set bearer context
-            { data: 'AT+SAPBR=1,1', callback: callb.bind(undefined,'AT+SAPBR=1,1') }, // Activate bearer context
-            { data: 'AT+SAPBR=2,1', callback: callb.bind(undefined,'AT+SAPBR=2,1') }, // Read bearer parameter
-            // { data: 'AT+CLBSCFG=0,1', callback: callb.bind(undefined,'AT+CLBSCFG=0,1') }, // Get customer ID
-            // { data: 'AT+CLBSCFG=0,2', callback: callb.bind(undefined,'AT+CLBSCFG=0,2') }, // Get Times have used positioning command
-            // { data: 'AT+CLBSCFG=0,3', callback: callb.bind(undefined,'AT+CLBSCFG=0,3') }, // Get LBS server’s address
-            { data: 'AT+CLBS=4,1', callback: parseCLBS.bind(this) }, // Getting location
-            { data: 'AT+SAPBR=0,1', callback: callb.bind(undefined,'AT+SAPBR=0,1') }, // Deactivate bearer context
-        ];
+            this._lastGSMLocation = new Location(parseFloat(split[1]), parseFloat(split[2]), parseInt(split[3]), dateTime);
 
-    for (const command of commandsQueue) {
+            console.log('GSMLocation:', this._lastGSMLocation);
+          }
+        } else {
+          console.error('Failed to get GSM location:', data);
+        }
+        resolve(this._lastGSMLocation);
+      }
+      function callb(fName, data) {
+        // console.info('Command response:', fName, data);
+      }
+      const commandsQueue = [
+        { data: 'AT+SAPBR=3,1,\"Contype\",\"GPRS\"', callback: callb.bind(undefined, 'AT+SAPBR=3,1,\"Contype\",\"GPRS\"') }, // Set bearer parameter
+        { data: `AT+SAPBR=3,1,\"APN\",\"${APN_GATE}\"`, callback: callb.bind(undefined, `AT+SAPBR=3,1,\"APN\",\"${APN_GATE}\"`) }, // Set bearer context
+        { data: 'AT+SAPBR=1,1', callback: callb.bind(undefined, 'AT+SAPBR=1,1') }, // Activate bearer context
+        { data: 'AT+SAPBR=2,1', callback: callb.bind(undefined, 'AT+SAPBR=2,1') }, // Read bearer parameter
+        // { data: 'AT+CLBSCFG=0,1', callback: callb.bind(undefined,'AT+CLBSCFG=0,1') }, // Get customer ID
+        // { data: 'AT+CLBSCFG=0,2', callback: callb.bind(undefined,'AT+CLBSCFG=0,2') }, // Get Times have used positioning command
+        // { data: 'AT+CLBSCFG=0,3', callback: callb.bind(undefined,'AT+CLBSCFG=0,3') }, // Get LBS server’s address
+        { data: 'AT+CLBS=4,1', callback: parseCLBS.bind(this) }, // Getting location
+        { data: 'AT+SAPBR=0,1', callback: callb.bind(undefined, 'AT+SAPBR=0,1') }, // Deactivate bearer context
+      ];
+
+      for (const command of commandsQueue) {
         this.queue.push(command);
-    }
+      }
 
       if (!this.busy) {
         this.processQueue();
@@ -504,6 +499,51 @@ class CommunicationModule extends SIM7000 {
 
       return this._lastGNSSLocation;
   }
+
+  // Get GSM towers
+  async getGSMTowers(mode=1) {
+//   commands = [
+//     {"command": "AT+CSQ", "expected_response": Status.OK},
+//     {"command": "AT+CENG={:d},1".format(mode), "expected_response": Status.OK},
+//     {"command": "AT+CENG?", "expected_response": Status.OK, "output": True},
+//     {"command": "AT+CENG=0", "expected_response": Status.OK},
+// ]
+
+    return new Promise((resolve, reject) => {
+
+      const res = [];
+
+      function parseResponse(data) {
+        resolve({ 'resp': data, 'queue': res });
+      }
+
+      function callbCollect(fName, data) {
+        res.push(data);
+        // console.info('Command response:', fName, data);
+      }
+    
+      function callb(fName, data) {
+        // console.info('Command response:', fName, data);
+      }
+
+      const commandsQueue = [
+        { data: 'AT+CSQ', callback: callbCollect.bind(undefined, 'AT+CSQ') }, // Get signal quality
+        { data: `AT+CENG=${mode},1`, callback: callbCollect.bind(undefined, `AT+CENG=${mode},1`) }, // Set mode
+        { data: 'AT+CENG?', callback: parseResponse }, // Getting location
+        { data: 'AT+CENG=0'},
+      ];
+
+      for (const command of commandsQueue) {
+        this.queue.push(command);
+      }
+
+      if (!this.busy) {
+        this.processQueue();
+      }
+
+    });
+  }
+
 }
 
 export { CommunicationModule, Location };
