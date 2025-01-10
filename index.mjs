@@ -18,6 +18,8 @@ connectionManager.on('data', async data => {
     if (data?.message) {
         // messageHandler(data);
         switch (data.message) {
+            case 'reboot':
+                break;
             case 'update':
                 connectionManager.send({ 'Not implemented': data });
                 updateManager();
@@ -32,6 +34,15 @@ connectionManager.on('data', async data => {
                     connectionManager.send({ 'RSSI': 'Failed to get RSSI' });
                 }
                 break;
+            case 'getGSMLocation':
+                try {
+                    const location = await comModule.getGSMLocation();
+                    connectionManager.send({ 'Location': location });
+                } catch (error) {
+                    console.error('Failed to get location:', error);
+                    connectionManager.send({ 'Location': 'Failed to get location' });
+                }
+                break
             default:
                 connectionManager.send({ 'Response': ` Feature "${data.message}" not implemented.` });
         }
