@@ -89,6 +89,10 @@ class BatteryManager extends EventEmitter {
     // console.log("BATTERY:", { voltage: this._voltage, current: this._current, power: this._power, charge: this._charge, charging: this._charging });
   }
 
+  async getBatteryStatus() {
+    return this.state;
+  }
+
   // Get the charge percentage from the voltage
   getChargePercentage(voltage) {
     return Math.floor(((voltage - battery_min) / (battery_max - battery_min)) * 1000) / 10;
@@ -145,6 +149,10 @@ class BatteryManager extends EventEmitter {
   // Gives the charging status
   get charging() {
     return this._charging;
+  }
+
+  get state() {
+    return { voltage: this._voltage, current: this._current, power: this._power, charge: this._charge, charging: this._charging };
   }
 
 }
