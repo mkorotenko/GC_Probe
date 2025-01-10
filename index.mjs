@@ -43,6 +43,12 @@ connectionManager.on('data', async data => {
                     connectionManager.send({ 'Location': 'Failed to get location' });
                 }
                 break
+            case 'comModule':
+                reqData = data.request;
+                const fn = reqData.function;
+                const params = reqData.options || [];
+                connectionManager.send({ 'Response': ` Com function "${fn}", options: "${params}"` });
+                break;
             default:
                 connectionManager.send({ 'Response': ` Feature "${data.message}" not implemented.` });
         }
