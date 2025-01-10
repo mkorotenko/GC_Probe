@@ -51,7 +51,8 @@ connectionManager.on('data', async data => {
                     connectionManager.send({ 'Response': ` Com function "${fn}", options: "${params}"` });
                 } catch (error) {
                     console.error('Failed to process comModule request:', error);
-                    connectionManager.send({ 'Response': 'Failed to process comModule request' });
+                    const erroStr = JSON.stringify(error, Object.getOwnPropertyNames(error))
+                    connectionManager.send({ 'Response': `Failed to process comModule request: ${erroStr}` });
                 }
                 break;
             default:
