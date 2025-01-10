@@ -44,10 +44,15 @@ connectionManager.on('data', async data => {
                 }
                 break
             case 'comModule':
-                reqData = data.request;
-                const fn = reqData.function;
-                const params = reqData.options || [];
-                connectionManager.send({ 'Response': ` Com function "${fn}", options: "${params}"` });
+                try {
+                    reqData = data.request;
+                    const fn = reqData.function;
+                    const params = reqData.options || [];
+                    connectionManager.send({ 'Response': ` Com function "${fn}", options: "${params}"` });
+                } catch (error) {
+                    console.error('Failed to process comModule request:', error);
+                    connectionManager.send({ 'Response': 'Failed to process comModule request' });
+                }
                 break;
             default:
                 connectionManager.send({ 'Response': ` Feature "${data.message}" not implemented.` });
