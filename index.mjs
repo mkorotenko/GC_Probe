@@ -1,17 +1,8 @@
-// const wrtc = require('wrtc');
-// import wrtc from 'wrtc';
-// import peerBot from './tel-bot.mjs';
 import { CommunicationModule } from './modem-driver/sim-driver.mjs';
 import { UART_PATH, BAUDRATE } from './modem-driver/modem-config.mjs';
-// import { SocketClient } from './connection/socket-client.mjs';
 import { connectionManager } from './connection/index.mjs';
-// import PeerConnector from './connection/index.mjs';
 import BatteryManager from './bat-driver/bat-driver.mjs';
 import updateManager from './update-manager.mjs';
-
-// const pc = new PeerConnector();
-
-// peerConnection.modem = undefined;
 
 // Some service messages
 const serviceMess = [
@@ -21,34 +12,30 @@ const serviceMess = [
 
 let comModule;
 
-connectionManager.on('data', data => {
-    console.log('Data:', data);
-    connectionManager.send({ 'Peer response': data });
+connectionManager.on('data', async data => {
+    // console.log('Data:', data);
+    // connectionManager.send({ 'Peer response': data });
     if (data?.message) {
         // messageHandler(data);
         switch (data.message) {
             case 'update':
                 updateManager();
                 break;
+            case 'getRSSI':
+                try {
+                    await comModule.getSignalQuality();
+                    const rssi = await comModule.signalQualityDisplay();
+                    connectionManager.send({ 'RSSI': rssi });
+                } catch (error) {
+                    console.error('Failed to get RSSI:', error);
+                    connectionManager.send({ 'RSSI': 'Failed to get RSSI' });
+                }
+                break;
+            default:
+                connectionManager.send({ 'Not implemented': data });
         }
     }
 })
-
-// pc.emitter.on('hostConnected', async () => {
-//     console.log('Host connected');
-// });
-
-// pc.emitter.on('hostDisconnected', async () => {
-//     console.log('Host disconnected');
-// });
-
-// pc.emitter.on('hostMessage', async (msg) => {
-//     console.log('Host message:', msg);
-// });
-
-// pc.emitter.on('hostError', async (error) => {
-//     console.error('Host error:', error);
-// });
 
 async function comModuleConnect() {
     comModule = new CommunicationModule(UART_PATH, BAUDRATE);

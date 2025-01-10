@@ -211,6 +211,11 @@ class CommunicationModule extends SIM7000 {
     return this._signalQuality;
   }
 
+  // Display signal quality
+  async signalQualityDisplay() {
+    return `${this._signalQuality} / ${this._signalQualityMax}`;
+  }
+
   // TODO: make working
   async sendUSSD(ussdCode) {
     return new Promise((resolve, reject) => {
@@ -229,11 +234,6 @@ class CommunicationModule extends SIM7000 {
         this.processQueue();
       }
     });
-  }
-
-  // Display signal quality
-  async signalQualityDisplay() {
-    return `${this._signalQuality} / ${this._signalQualityMax}`;
   }
 
     // Get GSM location
