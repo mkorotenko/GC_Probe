@@ -1,0 +1,18 @@
+{
+  "name": "peer_cl",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "ina219-async": "^1.1.0",
+    "onoff": "^6.0.3",
+    "pigpio": "^3.3.1",
+    "serialport": "^13.0.0",
+    "ws": "^8.18.0"
+  }
+}
