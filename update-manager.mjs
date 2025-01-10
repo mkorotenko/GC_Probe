@@ -14,7 +14,7 @@ async function runCommand(command, args) {
 }
 
 // Отримання останніх змін з віддаленого репозиторію
-export default async function updateManager() {
+async function updateManager() {
   await runCommand('git', ['pull', 'origin', 'main']);
   console.log('Files updated from GitHub');
 
@@ -29,3 +29,11 @@ export default async function updateManager() {
   console.log('Service restarting...');
   runCommand('sudo', ['systemctl', 'restart', 'peer-cl.service']);
 };
+
+async function restartSystem() {
+    // Перезапуск сервісу
+    console.log('System restarting...');
+    runCommand('sudo', ['reboot']);
+}
+
+export default { updateManager, restartSystem }

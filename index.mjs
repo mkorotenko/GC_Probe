@@ -2,7 +2,7 @@ import { CommunicationModule } from './modem-driver/sim-driver.mjs';
 import { UART_PATH, BAUDRATE } from './modem-driver/modem-config.mjs';
 import { connectionManager } from './connection/index.mjs';
 import BatteryManager from './bat-driver/bat-driver.mjs';
-import updateManager from './update-manager.mjs';
+import { updateManager, restartSystem } from './update-manager.mjs';
 
 let comModule, BM;
 BM = new BatteryManager();
@@ -19,9 +19,11 @@ connectionManager.on('data', async data => {
         // messageHandler(data);
         switch (data.message) {
             case 'reboot':
+                connectionManager.send({ 'reboot': "Restarting system..." });
+                restartSystem();
                 break;
             case 'update':
-                connectionManager.send({ 'update': "updating..." });
+                connectionManager.send({ 'update': "Updating..." });
                 updateManager();
                 break;
             case 'getRSSI':
