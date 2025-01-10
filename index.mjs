@@ -7,6 +7,7 @@ import { UART_PATH, BAUDRATE } from './modem-driver/modem-config.mjs';
 import { connectionManager } from './connection/index.mjs';
 // import PeerConnector from './connection/index.mjs';
 import BatteryManager from './bat-driver/bat-driver.mjs';
+import updateManager from './update-manager.mjs';
 
 // const pc = new PeerConnector();
 
@@ -27,6 +28,7 @@ connectionManager.on('data', data => {
         // messageHandler(data);
         switch (data.message) {
             case 'update':
+                updateManager();
                 break;
         }
     }
