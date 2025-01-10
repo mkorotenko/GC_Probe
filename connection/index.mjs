@@ -1,4 +1,4 @@
-import wrtc from 'wrtc';
+// import wrtc from 'wrtc';
 
 // import { iceServers, wsURL } from './config.mjs';
 import WebSocketClient from './socket-client.mjs';

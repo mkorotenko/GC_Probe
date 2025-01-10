@@ -1,11 +1,11 @@
-import wrtc from 'wrtc';
+// import wrtc from 'wrtc';
 import EventEmitter from 'events';
 
-class PeerConnector extends wrtc.RTCPeerConnection {
+class PeerConnector { //extends wrtc.RTCPeerConnection {
     constructor() {
-        super({
-            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-        });
+        // super({
+        //     iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+        // });
         // this.peerConnection = new wrtc.RTCPeerConnection({
         //     iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
         // });
