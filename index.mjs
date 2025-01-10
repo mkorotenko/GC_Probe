@@ -19,6 +19,7 @@ connectionManager.on('data', async data => {
         // messageHandler(data);
         switch (data.message) {
             case 'update':
+                connectionManager.send({ 'Not implemented': data });
                 updateManager();
                 break;
             case 'getRSSI':
@@ -32,7 +33,7 @@ connectionManager.on('data', async data => {
                 }
                 break;
             default:
-                connectionManager.send({ 'Not implemented': data });
+                connectionManager.send({ 'Response': ` Feature "${data.message}" not implemented.` });
         }
     }
 })
