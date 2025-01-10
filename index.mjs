@@ -23,7 +23,7 @@ let comModule;
 
 connectionManager.on('data', data => {
     console.log('Data:', data);
-    connectionManager.send({ 'response': data });
+    connectionManager.send({ 'Peer response': data });
     if (data?.message) {
         // messageHandler(data);
         switch (data.message) {
