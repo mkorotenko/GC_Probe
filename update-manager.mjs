@@ -36,4 +36,4 @@ async function restartSystem() {
     runCommand('sudo', ['reboot']);
 }
 
-export default { updateManager, restartSystem }
+export { updateManager, restartSystem }
