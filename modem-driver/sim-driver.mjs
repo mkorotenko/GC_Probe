@@ -529,8 +529,8 @@ class CommunicationModule extends SIM7000 {
       const commandsQueue = [
         { data: 'AT+CSQ', callback: callbCollect.bind(undefined, 'AT+CSQ') }, // Get signal quality
         { data: `AT+CENG=${mode},1`, callback: callbCollect.bind(undefined, `AT+CENG=${mode},1`) }, // Set mode
-        { data: 'AT+CENG?', callback: parseResponse }, // Getting location
-        { data: 'AT+CENG=0'},
+        { data: 'AT+CENG?', callback: callbCollect.bind(undefined, `AT+CENG?`) }, // Getting location
+        { data: 'AT+CENG=0', callback: parseResponse },
       ];
 
       for (const command of commandsQueue) {
