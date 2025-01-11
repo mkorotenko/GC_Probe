@@ -12,6 +12,15 @@ function stringifyError(error) {
     return JSON.stringify(error, Object.getOwnPropertyNames(error));
 }
 
+async function comModuleHandler(comModule, reqData) {
+    const fn = reqData.function;
+    const params = reqData.options || [];
+    if (!comModule[fn]) {
+        throw new Error(`Function "${fn}" not found in comModule.`);
+    }
+    return await comModule[fn](...params);
+}
+
 connectionManager.on('data', async data => {
     // console.log('Data:', data);
     // connectionManager.send({ 'Peer response': data });
@@ -37,19 +46,45 @@ connectionManager.on('data', async data => {
                 }
                 break;
             case 'comModule':
-                try {
-                    const reqData = data.request;
-                    const fn = reqData.function;
-                    const params = reqData.options || [];
-                    if (!comModule[fn]) {
-                        throw new Error(`Function "${fn}" not found in comModule.`);
+                // try {
+                //     const reqData = data.request;
+                //     const fn = reqData.function;
+                //     const params = reqData.options || [];
+                //     if (!comModule[fn]) {
+                //         throw new Error(`Function "${fn}" not found in comModule.`);
+                //     }
+                //     const result = await comModule[fn](...params);
+                //     connectionManager.send({ 'comModule': { [fn]: result } });
+                // } catch (error) {
+                //     console.error('Failed to process comModule request:', error);
+                //     const erroStr = stringifyError(error);
+                //     connectionManager.send({ 'Response': `Failed to process comModule request: ${erroStr}` });
+                // }
+                const reqData = data.request;
+                if (Array.isArray(reqData)) {
+                    const results = [];
+                    for (const reqItem of reqData) {
+                        try {
+                            const result = await comModuleHandler(comModule, reqItem);
+                            results.push({ [reqItem.function]: result });
+                            // connectionManager.send({ 'comModule': { [reqItem.function]: result } });
+                        } catch (error) {
+                            console.error('Failed to process comModule request:', error);
+                            const erroStr = stringifyError(error);
+                            results.push({ [reqItem.function]: `Failed to process comModule request: ${erroStr}` });
+                            // connectionManager.send({ 'Response': `Failed to process comModule request: ${erroStr}` });
+                        }
                     }
-                    const result = await comModule[fn](...params);
-                    connectionManager.send({ 'comModule': { [fn]: result } });
-                } catch (error) {
-                    console.error('Failed to process comModule request:', error);
-                    const erroStr = stringifyError(error);
-                    connectionManager.send({ 'Response': `Failed to process comModule request: ${erroStr}` });
+                    connectionManager.send({ 'comModule': results });
+                } else {
+                    try {
+                        const result = await comModuleHandler(comModule, reqData);
+                        connectionManager.send({ 'comModule': { [reqData.function]: result } });
+                    } catch (error) {
+                        console.error('Failed to process comModule request:', error);
+                        const erroStr = stringifyError(error);
+                        connectionManager.send({ 'Response': `Failed to process comModule request: ${erroStr}` });
+                    }
                 }
                 break;
             case 'batModule':
