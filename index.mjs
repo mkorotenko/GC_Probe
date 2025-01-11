@@ -33,11 +33,13 @@ const modules = {
     batModule: BM
 };
 
+connectionManager.on('connect', () => {
+    console.log('Connected to server.');
+    connectionManager.send({ 'ping': 'pong' });
+});
+
 connectionManager.on('data', async data => {
-    // console.log('Data:', data);
-    // connectionManager.send({ 'Peer response': data });
     if (data?.message) {
-        // messageHandler(data);
         switch (data.message) {
             case 'reboot':
                 connectionManager.send({ 'reboot': "Restarting system..." });
@@ -46,6 +48,9 @@ connectionManager.on('data', async data => {
             case 'update':
                 connectionManager.send({ 'update': "Updating..." });
                 updateManager();
+                break;
+            case 'ping':
+                connectionManager.send({ 'ping': 'pong' });
                 break;
             case 'getRSSI':
                 try {
@@ -59,20 +64,6 @@ connectionManager.on('data', async data => {
                 break;
             case 'comModule':
             case 'batModule':
-                // try {
-                //     const reqData = data.request;
-                //     const fn = reqData.function;
-                //     const params = reqData.options || [];
-                //     if (!comModule[fn]) {
-                //         throw new Error(`Function "${fn}" not found in comModule.`);
-                //     }
-                //     const result = await comModule[fn](...params);
-                //     connectionManager.send({ 'comModule': { [fn]: result } });
-                // } catch (error) {
-                //     console.error('Failed to process comModule request:', error);
-                //     const erroStr = stringifyError(error);
-                //     connectionManager.send({ 'Response': `Failed to process comModule request: ${erroStr}` });
-                // }
                 const module = modules[data.message];
                 const reqData = data.request;
                 if (Array.isArray(reqData)) {
@@ -101,22 +92,6 @@ connectionManager.on('data', async data => {
                     }
                 }
                 break;
-            // case 'batModule':
-            //     try {
-            //         const reqData = data.request;
-            //         const fn = reqData.function;
-            //         const params = reqData.options || [];
-            //         if (!BM[fn]) {
-            //             throw new Error(`Function "${fn}" not found in batModule.`);
-            //         }
-            //         const result = await BM[fn](...params);
-            //         connectionManager.send({ 'batModule': { [fn]: result } });
-            //     } catch (error) {
-            //         console.error('Failed to process batModule request:', error);
-            //         const erroStr = stringifyError(error);
-            //         connectionManager.send({ 'Response': `Failed to process batModule request: ${erroStr}` });
-            //     }
-            //     break;
             default:
                 connectionManager.send({ 'Response': ` Feature "${data.message}" not implemented.` });
         }
