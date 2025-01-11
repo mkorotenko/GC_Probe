@@ -35,7 +35,9 @@ const modules = {
 
 connectionManager.on('connect', () => {
     console.log('Connected to server.');
-    connectionManager.send({ 'ping': 'pong' });
+    setTimeout(() => {
+        connectionManager.send({ 'ping': 'pong' });
+    }, 500);
 });
 
 connectionManager.on('data', async data => {
