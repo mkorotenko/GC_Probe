@@ -12,13 +12,13 @@ function stringifyError(error) {
     return JSON.stringify(error, Object.getOwnPropertyNames(error));
 }
 
-async function comModuleHandler(comModule, reqData) {
+async function comModuleHandler(cModule, reqData) {
     const fn = reqData.function;
     const params = reqData.options || [];
-    if (!comModule[fn]) {
+    if (!cModule[fn]) {
         throw new Error(`Function "${fn}" not found.`);
     }
-    return await comModule[fn](...params);
+    return await cModule[fn](...params);
 }
 
 const modules = {
