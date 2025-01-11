@@ -22,7 +22,7 @@ async function comModuleHandler(comModule, reqData) {
 }
 
 const modules = {
-    comModule: comModuleHandler,
+    comModule: comModule,
     batModule: BM
 };
 
