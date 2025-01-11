@@ -7,6 +7,8 @@ const batBus = 1;
 const battery_max = 4.20;
 const battery_min = 3.0;
 
+const chargeThr = 25;
+
 class BatteryManager extends EventEmitter {
 
   __calibrated = false;
@@ -15,7 +17,7 @@ class BatteryManager extends EventEmitter {
   _power = 0;
   _charge = 0;
   _charging = false;
-  _chargeThreshold = 20;
+  _chargeThreshold = chargeThr;
   _readingData = false;
 
   constructor() {
