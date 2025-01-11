@@ -16,10 +16,15 @@ async function comModuleHandler(comModule, reqData) {
     const fn = reqData.function;
     const params = reqData.options || [];
     if (!comModule[fn]) {
-        throw new Error(`Function "${fn}" not found in comModule.`);
+        throw new Error(`Function "${fn}" not found.`);
     }
     return await comModule[fn](...params);
 }
+
+const modules = {
+    comModule: comModuleHandler,
+    batModule: BM
+};
 
 connectionManager.on('data', async data => {
     // console.log('Data:', data);
@@ -46,6 +51,7 @@ connectionManager.on('data', async data => {
                 }
                 break;
             case 'comModule':
+            case 'batModule':
                 // try {
                 //     const reqData = data.request;
                 //     const fn = reqData.function;
@@ -60,49 +66,50 @@ connectionManager.on('data', async data => {
                 //     const erroStr = stringifyError(error);
                 //     connectionManager.send({ 'Response': `Failed to process comModule request: ${erroStr}` });
                 // }
+                const module = modules[data.message];
                 const reqData = data.request;
                 if (Array.isArray(reqData)) {
                     const results = [];
                     for (const reqItem of reqData) {
                         try {
-                            const result = await comModuleHandler(comModule, reqItem);
+                            const result = await comModuleHandler(module, reqItem);
                             results.push({ [reqItem.function]: result });
                             // connectionManager.send({ 'comModule': { [reqItem.function]: result } });
                         } catch (error) {
-                            console.error('Failed to process comModule request:', error);
+                            console.error(`Failed to process ${data.message} request:`, error);
                             const erroStr = stringifyError(error);
-                            results.push({ [reqItem.function]: `Failed to process comModule request: ${erroStr}` });
+                            results.push({ [reqItem.function]: `Failed to process ${data.message} request: ${erroStr}` });
                             // connectionManager.send({ 'Response': `Failed to process comModule request: ${erroStr}` });
                         }
                     }
-                    connectionManager.send({ 'comModule': results });
+                    connectionManager.send({ [data.message]: results });
                 } else {
                     try {
-                        const result = await comModuleHandler(comModule, reqData);
-                        connectionManager.send({ 'comModule': { [reqData.function]: result } });
+                        const result = await comModuleHandler(module, reqData);
+                        connectionManager.send({ [data.message]: { [reqData.function]: result } });
                     } catch (error) {
-                        console.error('Failed to process comModule request:', error);
+                        console.error(`Failed to process ${data.message} request:`, error);
                         const erroStr = stringifyError(error);
-                        connectionManager.send({ 'Response': `Failed to process comModule request: ${erroStr}` });
+                        connectionManager.send({ 'Response': `Failed to process ${data.message} request: ${erroStr}` });
                     }
                 }
                 break;
-            case 'batModule':
-                try {
-                    const reqData = data.request;
-                    const fn = reqData.function;
-                    const params = reqData.options || [];
-                    if (!BM[fn]) {
-                        throw new Error(`Function "${fn}" not found in batModule.`);
-                    }
-                    const result = await BM[fn](...params);
-                    connectionManager.send({ 'batModule': { [fn]: result } });
-                } catch (error) {
-                    console.error('Failed to process batModule request:', error);
-                    const erroStr = stringifyError(error);
-                    connectionManager.send({ 'Response': `Failed to process batModule request: ${erroStr}` });
-                }
-                break;
+            // case 'batModule':
+            //     try {
+            //         const reqData = data.request;
+            //         const fn = reqData.function;
+            //         const params = reqData.options || [];
+            //         if (!BM[fn]) {
+            //             throw new Error(`Function "${fn}" not found in batModule.`);
+            //         }
+            //         const result = await BM[fn](...params);
+            //         connectionManager.send({ 'batModule': { [fn]: result } });
+            //     } catch (error) {
+            //         console.error('Failed to process batModule request:', error);
+            //         const erroStr = stringifyError(error);
+            //         connectionManager.send({ 'Response': `Failed to process batModule request: ${erroStr}` });
+            //     }
+            //     break;
             default:
                 connectionManager.send({ 'Response': ` Feature "${data.message}" not implemented.` });
         }
