@@ -21,6 +21,13 @@ async function comModuleHandler(cModule, reqData) {
     return await cModule[fn](...params);
 }
 
+async function comModuleConnect() {
+    comModule = new CommunicationModule(UART_PATH, BAUDRATE);
+    return await comModule.openConnection();
+};
+
+await comModuleConnect();
+
 const modules = {
     comModule: comModule,
     batModule: BM
@@ -115,13 +122,6 @@ connectionManager.on('data', async data => {
         }
     }
 })
-
-async function comModuleConnect() {
-    comModule = new CommunicationModule(UART_PATH, BAUDRATE);
-    return await comModule.openConnection();
-};
-
-await comModuleConnect();
 
 BM.on('lowCharge', () => {
     console.log('Low charge:', BM.charge);
