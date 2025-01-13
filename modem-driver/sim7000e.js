@@ -21,25 +21,7 @@ class SIM7000 {
             if (!trimData.length) {
                 return;
             }
-            // if (trimData === 'Call Ready' || trimData === 'SMS Ready') {
-            //     return;
-            // }
-            // if (trimData.at(0) === '+' && trimData.substring(0, 4) !== '+CSQ') {
-            //     if (trimData.startsWith('+CMT')) {
-            //         const split = trimData.split('"');
-            //         if (split.length >= 1) {
-            //             this.receivePhone = split[1];
-            //         }
-            //     }
-            //     return;
-            // }
-            // if (this.receivePhone) {
-            //     if (this.receiveMessageCallback) {
-            //         this.receiveMessageCallback(this.receivePhone, trimData);
-            //     }
-            //     this.receivePhone = undefined;
-            //     return;
-            // }
+
             if (this.current && this.current.data.replace(String.fromCharCode(0x1A), '') !== trimData && this.current.callback) {
                 this.current.callback(trimData);
                 if (trimData.at(0) !== '+') {
@@ -83,16 +65,9 @@ class SIM7000 {
         return new Promise((resolve, reject) => {
             this.queue.push({
                 data: 'AT',
-                callback: (data) => {
-                    if (data === 'OK') {
-                        resolve(true);
-                    }
-                    else {
-                        resolve(false);
-                    }
-                }
+                callback: (data) => resolve(data === 'OK')
             });
-            // console.info('     COMMAND: AT busy:', this.busy);
+
             if (!this.busy) {
                 this.processQueue();
             }

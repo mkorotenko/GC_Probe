@@ -16,6 +16,19 @@ class Location {
   }
 }
 
+class LocationGNSS extends Location {
+  constructor(longitude, latitude, acuracy, isFixed, satelites, satelitesUsed, dateTime) {
+    super(longitude, latitude, acuracy, dateTime);
+    this.isFixed = isFixed;
+    this.satelites = satelites;
+    this.satelitesUsed = satelitesUsed;
+  }
+
+  toString() {
+    return `${super.toString()}, Fixed: ${this.isFixed}, Satelites: ${this.satelites}, Satelites used: ${this.satelitesUsed}`;
+  }
+}
+
 function parseGNSSDate(dateString) {
   const year = parseInt(dateString.substring(0, 4), 10);
   const month = parseInt(dateString.substring(4, 6), 10) - 1; // Months are zero-based in JavaScript
@@ -463,7 +476,15 @@ class CommunicationModule extends SIM7000 {
               if (split.length >= 6 && split[1] === '1') {
                 const resp = parseCGNSINF(data);
                 // console.log('GNSS data:', resp);
-                this._lastGNSSLocation = new Location(resp.latitude, resp.longitude, resp.hpa, resp.utcDateTime);
+                this._lastGNSSLocation = new LocationGNSS(
+                  resp.latitude,
+                  resp.longitude,
+                  resp.hpa,
+                  resp.fixStatus === '1',
+                  resp.gnssSatellitesInView,
+                  resp.gnssSatellitesUsed,
+                  resp.utcDateTime
+                );
                 // console.log('GNSSLocation:', this._lastGNSSLocation);
                 gpsFixed = true;
                 this._gettingGNSSLocation = false;
