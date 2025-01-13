@@ -540,6 +540,36 @@ class CommunicationModule extends SIM7000 {
     });
   }
 
+  // Get GSM tower info
+  async getGSMTower() {
+    //   commands = [
+    //     {"command": "AT+CREG?", "expected_response": Status.OK, "output": True},
+    // ]
+
+    return new Promise((resolve, reject) => {
+
+      const res = [];
+
+      function parseResponse(data) {
+        res.push(data);
+        resolve({ 'resp': res });
+      }
+
+      const commandsQueue = [
+        { data: 'AT+CREG?', callback: parseResponse },
+      ];
+
+      for (const command of commandsQueue) {
+        this.queue.push(command);
+      }
+
+      if (!this.busy) {
+        this.processQueue();
+      }
+
+    });
+  }
+
 }
 
 export { CommunicationModule, Location };
