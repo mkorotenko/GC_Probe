@@ -39,24 +39,24 @@ function parseCGNSINF(response) {
   const parts = response.split(':')[1].trim().split(',');
 
   return {
-      gnssRunStatus: parseInt(parts[0], 10),
-      fixStatus: parseInt(parts[1], 10),
+      gnssRunStatus: parts[0],//parseInt(parts[0], 10),
+      fixStatus: parts[1],//parseInt(parts[1], 10),
       utcDateTime: parseGNSSDate(parts[2]),
-      latitude: parseFloat(parts[4]),
-      longitude: parseFloat(parts[3]),
-      mslAltitude: parseFloat(parts[5]),
-      speedOverGround: parseFloat(parts[6]),
-      courseOverGround: parseFloat(parts[7]),
-      fixMode: parseInt(parts[8], 10),
-      hdop: parseFloat(parts[10]),
-      pdop: parseFloat(parts[11]),
-      vdop: parseFloat(parts[12]),
-      gnssSatellitesInView: parseInt(parts[14], 10),
-      gnssSatellitesUsed: parseInt(parts[15], 10),
-      glonassSatellitesUsed: parseInt(parts[16], 10),
-      cn0Max: parseFloat(parts[18]),
-      hpa: parseFloat(parts[19]),
-      vpa: parseFloat(parts[20])
+      latitude: parts[4],//parseFloat(parts[4]),
+      longitude: parts[3],//parseFloat(parts[3]),
+      mslAltitude: parts[5],//parseFloat(parts[5]),
+      speedOverGround: parts[6],//parseFloat(parts[6]),
+      courseOverGround: parts[7],//parseFloat(parts[7]),
+      fixMode: parts[8],//parseInt(parts[8], 10),
+      hdop: parts[10],//parseFloat(parts[10]),
+      pdop: parts[11],//parseFloat(parts[11]),
+      vdop: parts[12],//parseFloat(parts[12]),
+      gnssSatellitesInView: parts[14],//parseInt(parts[14], 10),
+      gnssSatellitesUsed: parts[15],//parseInt(parts[15], 10),
+      glonassSatellitesUsed: parts[16],//parseInt(parts[16], 10),
+      cn0Max: parts[18],//parseFloat(parts[18]),
+      hpa: parts[19],//parseFloat(parts[19]),
+      vpa: parts[20],//parseFloat(parts[20])
   };
 }
 
