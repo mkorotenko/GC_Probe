@@ -323,20 +323,6 @@ class CommunicationModule extends SIM7000 {
 
   async execCommand(command) {
     return new Promise((resolve, reject) => {
-    //   this.queue.push({
-    //     data: 'AT+CGNSPWR?',
-    //     callback: (data) => {
-    //       if (data.startsWith('+CGNSPWR:')) {
-    //         const split = data.split(':');
-    //         if (split.length < 1) {
-    //           resolve(0);
-    //         }
-    //         resolve(parseFloat(split[1]));
-    //       }
-    //       console.error('GNSS power status:', data);
-    //       resolve(data);
-    //     }
-    //   });
       command.callback = (data) => {
         console.log('Command response:', data);
         resolve(data);
@@ -348,6 +334,40 @@ class CommunicationModule extends SIM7000 {
       } else {
         console.error('Busy...');
       }
+    });
+  }
+
+  async execCommand(command) {
+    return new Promise((resolve, reject) => {
+      const res = [];
+      function parseResponse(data) {
+        res.push(data);
+        resolve({ 'resp': res });
+      }
+      function callbCollect(fName, data) {
+        // res.push({ [fName]: data });
+        res.push(data);
+      }
+
+      // const commandsQueue = [
+      //   { data: 'AT+CSQ', callback: callbCollect.bind(undefined, 'AT+CSQ') }, // Get signal quality
+      //   { data: `AT+CENG=${mode},1`, callback: callbCollect.bind(undefined, `AT+CENG=${mode},1`) }, // Set mode
+      //   { data: 'AT+CENG?', callback: callbCollect.bind(undefined, `AT+CENG?`) }, // Getting location
+      //   { data: 'AT+CENG=0', callback: parseResponse },
+      // ];
+      const commandsQueue = command.map(item => {
+        return { data: item, callback: callbCollect.bind(undefined, item) };
+      })
+      commandsQueue[commandsQueue.length - 1].callback = parseResponse;
+
+      for (const command of commandsQueue) {
+        this.queue.push(command);
+      }
+
+      if (!this.busy) {
+        this.processQueue();
+      }
+
     });
   }
 
