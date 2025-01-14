@@ -356,7 +356,7 @@ class CommunicationModule extends SIM7000 {
       //   { data: 'AT+CENG=0', callback: parseResponse },
       // ];
       const commandsQueue = command.map(item => {
-        return { data: item, callback: callbCollect.bind(undefined, item) };
+        return { data: item.data, callback: callbCollect.bind(undefined, item) };
       })
       commandsQueue[commandsQueue.length - 1].callback = parseResponse;
 
