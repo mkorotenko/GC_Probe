@@ -364,10 +364,10 @@ class CommunicationModule extends SIM7000 {
         this.queue.push(command);
       }
 
-      resolve({ 'resp': commandsQueue });
-      // if (!this.busy) {
-      //   this.processQueue();
-      // }
+      // resolve({ 'resp': commandsQueue });
+      if (!this.busy) {
+        this.processQueue();
+      }
 
     });
   }
