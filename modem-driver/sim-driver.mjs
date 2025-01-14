@@ -321,21 +321,21 @@ class CommunicationModule extends SIM7000 {
     });
   }
 
-  async execCommand(command) {
-    return new Promise((resolve, reject) => {
-      command.callback = (data) => {
-        console.log('Command response:', data);
-        resolve(data);
-    };
-      this.queue.push(command);
+  // async execCommand(command) {
+  //   return new Promise((resolve, reject) => {
+  //     command.callback = (data) => {
+  //       console.log('Command response:', data);
+  //       resolve(data);
+  //   };
+  //     this.queue.push(command);
 
-      if (!this.busy) {
-        this.processQueue();
-      } else {
-        console.error('Busy...');
-      }
-    });
-  }
+  //     if (!this.busy) {
+  //       this.processQueue();
+  //     } else {
+  //       console.error('Busy...');
+  //     }
+  //   });
+  // }
 
   async execCommand(command) {
     return new Promise((resolve, reject) => {
