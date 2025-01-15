@@ -304,7 +304,7 @@ class CommunicationModule extends SIM7000 {
         { data: 'AT+SAPBR=2,1', callback: callb.bind(undefined, 'AT+SAPBR=2,1') }, // Read bearer parameter
         // { data: 'AT+CLBSCFG=0,1', callback: callb.bind(undefined,'AT+CLBSCFG=0,1') }, // Get customer ID
         // { data: 'AT+CLBSCFG=0,2', callback: callb.bind(undefined,'AT+CLBSCFG=0,2') }, // Get Times have used positioning command
-        { data: 'AT+CLBSCFG=1,3,\"91.223.223.190:8000\"', callback: callb.bind(undefined,'AT+CLBSCFG=0,3') }, // Get LBS server’s address
+        // { data: 'AT+CLBSCFG=0,3', callback: callb.bind(undefined,'AT+CLBSCFG=0,3') }, // Get LBS server’s address
         { data: 'AT+CLBS=4,1', callback: parseCLBS.bind(this) }, // Getting location
         { data: 'AT+SAPBR=0,1', callback: callb.bind(undefined, 'AT+SAPBR=0,1') }, // Deactivate bearer context
       ];
