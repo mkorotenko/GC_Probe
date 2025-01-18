@@ -156,4 +156,14 @@ export class StateNotificator extends EventEmitter {
             this.emit('data', { [data.message]: { [request.function]: result } });
         }
     }
+
+    resumeTasks() {
+        console.log('Resuming tasks:', this.tasks.length);
+        this.tasks.forEach(task => task.start());
+    }
+
+    terminateTasks() {
+        console.log('Terminating tasks:', this.tasks.length);
+        this.tasks.forEach(task => task.stop());
+    }
 }
