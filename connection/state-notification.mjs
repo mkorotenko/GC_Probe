@@ -56,7 +56,7 @@ export class StateNotificator extends EventEmitter {
             results.push(await this.moduleHandler(reqItem, module));
         }
         // connectionManager.send({ [data.message]: results });
-        this.emit({[data.message]: results});
+        this.emit('data', {[data.message]: results});
     } else {
         // try {
         //     const result = await comModuleHandler(module, reqData);
@@ -67,7 +67,7 @@ export class StateNotificator extends EventEmitter {
         //     connectionManager.send({ 'Response': `Failed to process ${data.message} request: ${erroStr}` });
         // }
         const result = await this.moduleHandler(request, module);
-        this.emit(result);
+        this.emit('data', result);
     }
   }
 }

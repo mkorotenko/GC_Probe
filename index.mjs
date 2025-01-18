@@ -43,9 +43,11 @@ connectionManager.on('connect', () => {
 
 const SN = new StateNotificator(modules);
 SN.on('data', data => connectionManager.send(data));
+SN.on('error', error => connectionManager.send(error));
 
 connectionManager.on('data', async data => {
     if (data?.SN) {
+        connectionManager.send({ 'Response': 'State notification handler.' });
         SN.requestHandler(data);
     } else
     if (data?.message) {
