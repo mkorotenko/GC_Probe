@@ -90,7 +90,7 @@ export class StateNotificator extends EventEmitter {
     }
 
     addTask(data) {
-        if (this.tasks.some(this.compareRequests.bind(this, data))) {
+        if (this.tasks.some(item => this.compareRequests(data, item.request))) {
             console.error('Task already contains same functions.');
             return false;
         }
