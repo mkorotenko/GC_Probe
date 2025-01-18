@@ -40,6 +40,11 @@ connectionManager.on('data', async data => {
                 restartSystem();
                 break;
             case 'update':
+                const orig = console.log;
+                console.log = () => {
+                    connectionManager.send({ 'update': Array.from(arguments).join(' ') });
+                    orig.apply(console, arguments);
+                };
                 connectionManager.send({ 'update': "Updating..." });
                 updateManager();
                 break;
