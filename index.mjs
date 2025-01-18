@@ -3,6 +3,7 @@ import { UART_PATH, BAUDRATE } from './modem-driver/modem-config.mjs';
 import { connectionManager } from './connection/index.mjs';
 import BatteryManager from './bat-driver/bat-driver.mjs';
 import { updateManager, restartSystem } from './update-manager.mjs';
+import { StateNotificator } from './connection/state-notification.mjs';
 
 let comModule, BM;
 BM = new BatteryManager();
@@ -40,7 +41,13 @@ connectionManager.on('connect', () => {
     }, 500);
 });
 
+const SN = new StateNotificator(modules);
+SN.on('data', data => connectionManager.send(data));
+
 connectionManager.on('data', async data => {
+    if (data?.SN) {
+        SN.requestHandler(data);
+    } else
     if (data?.message) {
         switch (data.message) {
             case 'reboot':
