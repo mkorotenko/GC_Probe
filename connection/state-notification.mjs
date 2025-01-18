@@ -9,8 +9,8 @@ class IntervalHandler {
         this.id = INTERVAL_ID.id++;
 
         this.request = { 
-            message: { ...request.message },
-            request: { ...request.request },
+            message: request.message,
+            request: request.request,
             intervalId: this.id 
         };
         this.interval = interval;
