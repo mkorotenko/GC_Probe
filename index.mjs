@@ -25,16 +25,16 @@ const SN = new StateNotificator(modules);
 SN.on('data', data => connectionManager.send(data));
 SN.on('error', error => connectionManager.send(error));
 
-connectionManager.on('connect', () => {
-    console.log('Connected to server.');
-    setTimeout(() => {
-        connectionManager.send({ 'ping': 'pong' });
-    }, 500);
+connectionManager.on('connected', () => {
+    // console.log('Connected to server.');
+    // setTimeout(() => {
+    //     connectionManager.send({ 'ping': 'pong' });
+    // }, 500);
     SN.resumeTasks();
 });
 
-connectionManager.on('disconnect', () => {
-    console.log('Disconnected from server.');
+connectionManager.on('disconnected', () => {
+    // console.log('Disconnected from server.');
     SN.terminateTasks();
 });
 
