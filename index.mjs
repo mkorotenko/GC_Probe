@@ -40,27 +40,12 @@ connectionManager.on('data', async data => {
                 restartSystem();
                 break;
             case 'update':
-                const orig = console.log;
-                console.log = () => {
-                    connectionManager.send({ 'update': Array.from(arguments).join(' ') });
-                    orig.apply(console, arguments);
-                };
                 connectionManager.send({ 'update': "Updating..." });
                 updateManager();
                 break;
             case 'ping':
                 connectionManager.send({ 'ping': 'pong' });
                 break;
-            // case 'getRSSI':
-            //     try {
-            //         await comModule.getSignalQuality();
-            //         const rssi = await comModule.signalQualityDisplay();
-            //         connectionManager.send({ 'RSSI': rssi });
-            //     } catch (error) {
-            //         console.error('Failed to get RSSI:', error);
-            //         connectionManager.send({ 'RSSI': 'Failed to get RSSI' });
-            //     }
-            //     break;
             case 'comModule':
             case 'batModule':
                 SN.requestHandler(data);
