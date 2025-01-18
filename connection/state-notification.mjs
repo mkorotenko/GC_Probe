@@ -34,14 +34,14 @@ export class StateNotificator extends EventEmitter {
         return;
     }
 
-    this.emit('data', { 'Response': `State notification module: ${data.message}` });
+    // this.emit('data', { 'Response': `State notification module: ${data.message}` });
     const module = this.modules[data.message];
     if (!module) {
         this.emit({'error': 'Invalid module', 'request': data.message});
         return;
     }
     const request = data.request;
-    this.emit('data', { 'Request': request });
+    // this.emit('data', { 'Request': request });
     if (Array.isArray(request)) {
         const results = [];
         for (const reqItem of request) {

@@ -47,7 +47,7 @@ SN.on('error', error => connectionManager.send(error));
 
 connectionManager.on('data', async data => {
     if (data?.SN) {
-        connectionManager.send({ 'Response': 'State notification handler.' });
+        // connectionManager.send({ 'Response': 'State notification handler.' });
         SN.requestHandler(data);
     } else
     if (data?.message) {
@@ -75,33 +75,34 @@ connectionManager.on('data', async data => {
                 break;
             case 'comModule':
             case 'batModule':
-                const module = modules[data.message];
-                const reqData = data.request;
-                if (Array.isArray(reqData)) {
-                    const results = [];
-                    for (const reqItem of reqData) {
-                        try {
-                            const result = await comModuleHandler(module, reqItem);
-                            results.push({ [reqItem.function]: result });
-                            // connectionManager.send({ 'comModule': { [reqItem.function]: result } });
-                        } catch (error) {
-                            console.error(`Failed to process ${data.message} request:`, error);
-                            const erroStr = stringifyError(error);
-                            results.push({ [reqItem.function]: `Failed to process ${data.message} request: ${erroStr}` });
-                            // connectionManager.send({ 'Response': `Failed to process comModule request: ${erroStr}` });
-                        }
-                    }
-                    connectionManager.send({ [data.message]: results });
-                } else {
-                    try {
-                        const result = await comModuleHandler(module, reqData);
-                        connectionManager.send({ [data.message]: { [reqData.function]: result } });
-                    } catch (error) {
-                        console.error(`Failed to process ${data.message} request:`, error);
-                        const erroStr = stringifyError(error);
-                        connectionManager.send({ 'Response': `Failed to process ${data.message} request: ${erroStr}` });
-                    }
-                }
+                SN.requestHandler(data);
+                // const module = modules[data.message];
+                // const reqData = data.request;
+                // if (Array.isArray(reqData)) {
+                //     const results = [];
+                //     for (const reqItem of reqData) {
+                //         try {
+                //             const result = await comModuleHandler(module, reqItem);
+                //             results.push({ [reqItem.function]: result });
+                //             // connectionManager.send({ 'comModule': { [reqItem.function]: result } });
+                //         } catch (error) {
+                //             console.error(`Failed to process ${data.message} request:`, error);
+                //             const erroStr = stringifyError(error);
+                //             results.push({ [reqItem.function]: `Failed to process ${data.message} request: ${erroStr}` });
+                //             // connectionManager.send({ 'Response': `Failed to process comModule request: ${erroStr}` });
+                //         }
+                //     }
+                //     connectionManager.send({ [data.message]: results });
+                // } else {
+                //     try {
+                //         const result = await comModuleHandler(module, reqData);
+                //         connectionManager.send({ [data.message]: { [reqData.function]: result } });
+                //     } catch (error) {
+                //         console.error(`Failed to process ${data.message} request:`, error);
+                //         const erroStr = stringifyError(error);
+                //         connectionManager.send({ 'Response': `Failed to process ${data.message} request: ${erroStr}` });
+                //     }
+                // }
                 break;
             default:
                 connectionManager.send({ 'Response': ` Feature "${data.message}" not implemented.` });
